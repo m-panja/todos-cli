@@ -1,0 +1,17 @@
+# Dependency directory
+node_modules
+
+# Ignore built ts files
+dist/**/*
+
+# Ignore IDE specific files
+.idea/
+.vscode
+
+# Testing
+jest.json
+coverage
+test-report.html
+
+# Ignore configuration file for asdf
+.tool-versions

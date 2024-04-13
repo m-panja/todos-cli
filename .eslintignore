@@ -1,0 +1,2 @@
+**/__tests__/swagger/*.yaml
+**/__tests__/utils/base-config-with-env-vars.test.ts
