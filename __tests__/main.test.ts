@@ -1,54 +1,42 @@
-import axios from "axios";
-import { fetchAllTodos, filterOnlyEvenTodos, Todo } from "../src/main";
 
-jest.mock("axios");
+import { main } from "../src/main";
+import { todoService } from "../src/todos";
+import { printService } from "../src/print";
 
-describe("fetchTodos", () => {
-  it("fetches todos from the API", async () => {
-    const mockData: Todo[] = [
+describe("main", () => {
+  it("should call fetchAllTodos,filterOnlyEvenTodos and displayFirstTwenty with correct arguments", async () => {
+    const todos = [
       { userId: 1, id: 1, title: "todo 1", completed: false },
-      { userId: 1, id: 2, title: "todo 2", completed: true },
+      { userId: 2, id: 2, title: "todo 2", completed: true }
     ];
-    (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValue({ data: mockData });
+    
+    jest.spyOn(todoService, "fetchTodos").mockResolvedValue(todos);
+    jest.spyOn(todoService, "filterOnlyEvenTodos").mockReturnValue({} as any);
+    jest.spyOn(printService, "firstTwenty").mockReturnValue({} as any);
+    await main();
 
-    const todos = await fetchAllTodos();
-
-    expect(todos).toEqual(mockData);
+    // Check if all necessary functions were called with correct arguments
+    expect(todoService.fetchTodos).toHaveBeenCalledTimes(1);
+    expect(todoService.filterOnlyEvenTodos).toHaveBeenCalledTimes(1);
+    expect(todoService.filterOnlyEvenTodos).toHaveBeenCalledWith(todos);
+    expect(printService.firstTwenty).toHaveBeenCalledTimes(1);
+    
+    jest.clearAllMocks();
   });
 
-  it("handles errors when fetching todos", async () => {
-    const errorMessage = "Failed to fetch todos";
-    (axios.get as jest.MockedFunction<typeof axios.get>).mockRejectedValue(new Error(errorMessage));
-
-    await expect(fetchAllTodos()).rejects.toThrow(errorMessage);
-  });
-});
-
-describe("filterEvenTodos", () => {
-  it("filters even numbered todos", () => {
-    const todos: Todo[] = [
-      { userId: 1, id: 1, title: "todo 1", completed: false },
-      { userId: 1, id: 2, title: "todo 2", completed: true },
-      { userId: 1, id: 3, title: "todo 3", completed: false },
-    ];
-    const expectedEvenTodos: Todo[] = [
-      { userId: 1, id: 2, title: "todo 2", completed: true },
-    ];
-
-    const evenTodos = filterOnlyEvenTodos(todos);
-
-    expect(evenTodos).toEqual(expectedEvenTodos);
-  });
-
-  it("returns an empty array if no even todos found", () => {
-    const todos: Todo[] = [
-      { userId: 1, id: 1, title: "todo 1", completed: false },
-      { userId: 1, id: 3, title: "todo 3", completed: false },
-    ];
-
-    const evenTodos = filterOnlyEvenTodos(todos);
-
-    expect(evenTodos).toEqual([]);
+  it("handles errors when call referenced method", async () => {
+    const errorMessage = "Failed to call fetchTodos";
+    jest.spyOn(todoService, "fetchTodos").mockRejectedValue(errorMessage);
+    
+    const originalConsoleError = console.error;
+    const errorMock = jest.fn();
+    console.error = errorMock;
+  
+    await main();
+  
+    expect(errorMock).toHaveBeenCalledWith("Error:", errorMessage);
+    console.error = originalConsoleError;
+    jest.clearAllMocks();
   });
 });
 

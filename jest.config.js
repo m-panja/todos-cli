@@ -2,7 +2,7 @@ module.exports = {
   collectCoverage: false,
   collectCoverageFrom: [ "./src/**", "!./src/**/*.json" ],
   coveragePathIgnorePatterns: [
-    "<rootDir>/src/main.ts"
+    "<rootDir>/src/index.ts"
   ],
   coverageDirectory: "coverage",
   coverageThreshold: {
