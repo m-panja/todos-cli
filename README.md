@@ -43,7 +43,7 @@ npm run validate
 
 ## Docker Configuration
 
-To run this application in Docker run following commands:
+To run this application in Docker using following commands:
 
 1. ```docker build -t todo-cli .```
 2. ```docker-compose up```
