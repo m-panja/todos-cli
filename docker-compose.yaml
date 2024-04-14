@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  todos-cli:
+    build:
+      context: .
+    command: npm run dev
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
